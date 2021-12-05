@@ -1,0 +1,75 @@
+﻿@page "/"
+
+<PageTitle>Index</PageTitle>
+
+@*@inject IJSRuntime JS*@
+
+<MudGrid Style="margin-top:5px;">
+    <MudItem Class="canvas-container" id="canvas-container" xs="12" md="12" lg="12" sm="12" xl="12">
+        <div class="text-center">
+            <div>
+                @selectedEffect
+            </div>
+            <MudCarousel @ref="_carousel" ItemsSource="EffectsThumbs" Style="height:100px;" ShowArrows="true" ShowDelimiters="false" AutoCycle="false" 
+            SelectedIndex="selectedEffect" SelectedIndexChanged="SwitchEffect">
+                <ItemTemplate >
+                    <div class="d-flex flex-column flex-column justify-center" style="height:100%">
+                        @*<MudIcon Class="mx-auto" Icon="@Icons.Custom.Brands.MudBlazor" Size="@Size.Large" />*@
+                        <MudAvatar Style="align-self:center" Image="@context" Size="Size.Large" Class="ma-2" />
+                        @*<MudText Align="@Align.Center" Class="mx-auto">@context</MudText>*@
+                    </div>
+                </ItemTemplate>
+            </MudCarousel>
+            <MudAppBar Elevation="0" Fixed="false" Style="z-index:0">
+                <MudSpacer />
+                <MudButton Variant="Variant.Text" StartIcon="@Play.Icon()" OnClick="ToggleVideo" Color="Color.Primary" Size="Size.Large">
+                    @Play.Text()
+                </MudButton>
+                <MudButton Variant="Variant.Text" StartIcon="@Icons.Filled.PhotoCamera" OnClick="TakeScreenshot" Color="Color.Primary">
+                    Take Photo
+                </MudButton>
+                <MudButton Variant="Variant.Text" StartIcon="@Record.Icon()" OnClick="VideoRecording" Color="Color.Primary">
+                    @Record.Text()
+                </MudButton>
+                <MudButton Variant="Variant.Text"  OnClick="LoadImage" Color="Color.Primary">
+                    loadImage1
+                </MudButton>
+                <MudButton Variant="Variant.Text"  OnClick="LoadEffect" Color="Color.Primary">
+                    LoadEffect
+                </MudButton>
+                <MudButton Variant="Variant.Text"  OnClick="SetFps" Color="Color.Primary">
+                    Set 60 FPS
+                </MudButton>
+                 <select id="videoSource" ></select>
+                 <select id="fpsSelect" ></select>
+                 <select id="resolutionSelect" ></select>
+                <MudSpacer />
+            </MudAppBar>
+            <canvas id="deepar-canvas" class="flex">
+            </canvas>
+            <a id="link"></a>
+        </div>
+    </MudItem>
+    @*    <MudItem xs="12" md="12" lg="12" sm="12" xl="12">
+        <button @onclick="StartVideo">Start Video</button>
+        <br />
+        <button @onclick="StopVideo">Stop Video</button>
+        <br />
+        <button @onclick="SwitchEffect">Switch Effect</button>
+        <br />
+        <button @onclick="ClearEffect">Clear Effect</button>
+        <br />
+        <button @onclick="TakeScreenshot">Take Screenshot</button>
+        <br />
+        <button @onclick="VideoRecording">Record</button>
+        </MudItem>*@
+</MudGrid>
+
+
+
+
+
+
+@code {
+
+}

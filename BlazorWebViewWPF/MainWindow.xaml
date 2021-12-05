@@ -1,0 +1,21 @@
+﻿<Window x:Class="BlazorWebViewWPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:blazor="clr-namespace:Microsoft.AspNetCore.Components.WebView.Wpf;assembly=Microsoft.AspNetCore.Components.WebView.Wpf"
+        xmlns:local="clr-namespace:BlazorWebViewWPF"
+        xmlns:blazorapp="clr-namespace:BlazorApp;assembly=BlazorApp"
+        mc:Ignorable="d"
+        Title="DeepAR" Width="1920" Height="1080"  WindowState="Maximized" Background="Red" 
+        WindowStyle="None" BorderThickness="0" ResizeMode="NoResize" Loaded="Window_Loaded">
+    <Grid Height="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=ActualHeight}"
+          Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=ActualWidth}">
+        <blazor:BlazorWebView Name="blazorWebView" Background="Transparent" Margin="0,0,0,0">
+            <!--<blazor:BlazorWebView.RootComponents>
+                <blazor:RootComponent Selector="#app" ComponentType="{x:Type blazorapp:App }" />
+            </blazor:BlazorWebView.RootComponents>-->
+        </blazor:BlazorWebView>
+        <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="445,10,0,0" VerticalAlignment="Top" Click="button_Click"/>
+    </Grid>
+</Window>

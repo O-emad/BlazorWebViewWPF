@@ -1,0 +1,44 @@
+﻿@*@inherits LayoutComponentBase
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+*@
+
+@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="MyCustomTheme" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar id="appbar">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e)=> DrawerToggle())" />
+        DeepAR
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" OnClick="CloseApp"></MudIconButton>
+        
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen">
+        <NavMenu />
+    </MudDrawer>
+
+    <MudMainContent MaxWidth="MaxWidth.Medium">
+        <MudContainer MaxWidth="MaxWidth.False">
+            @Body
+        </MudContainer>
+
+    </MudMainContent>
+</MudLayout>
