@@ -1,57 +1,64 @@
-﻿@page "/fetchdata"
-@inject HttpClient Http
+﻿
 
-<PageTitle>Weather forecast</PageTitle>
+@implements IDisposable
+@inject IJSRuntime JsRuntime;
+@inject NavigationManager Navigator;
 
-<h1>Weather forecast</h1>
-
-<p>This component demonstrates fetching data from the server.</p>
-
-@if (forecasts == null)
+@if (IsOnline)
 {
-    <p><em>Loading...</em></p>
+    @Online
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in forecasts)
-            {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    @Offline
 }
 
 @code {
-    private WeatherForecast[]? forecasts;
 
-    protected override async Task OnInitializedAsync()
+    [Parameter]
+    public RenderFragment Online { get; set; }
+
+    [Parameter]
+    public RenderFragment Offline { get; set; }
+
+    public bool IsOnline { get; set; }
+
+    public bool FirstRender{ get; set; }
+
+    [JSInvokable("Connection.StatusChanged")]
+    public void OnConnectionStatusChanged(bool isOnline)
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+        if (IsOnline != isOnline)
+        {
+            IsOnline = isOnline;
+
+            if (isOnline && FirstRender)
+            {
+                FirstRender = false;
+                Navigator.NavigateTo("./",true,true);
+            }
+        }
+
+        StateHasChanged();
     }
 
-    public class WeatherForecast
+    protected override void OnAfterRender(bool firstRender)
     {
-        public DateTime Date { get; set; }
+        if (firstRender)
+        {
+            FirstRender = true;
+        }
+    }
 
-        public int TemperatureC { get; set; }
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
 
-        public string? Summary { get; set; }
+        JsRuntime.InvokeVoidAsync("Connection.Initialize", DotNetObjectReference.Create(this));
+    }
 
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    public void Dispose()
+    {
+        JsRuntime.InvokeVoidAsync("Connection.Dispose");
     }
 }

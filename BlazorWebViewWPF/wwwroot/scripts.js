@@ -14,10 +14,97 @@ var canvasCopyInterval = setInterval(function () {
         var ctx = viewCanvas.getContext('2d');
         ctx.drawImage(backgroundCanvas, 0, 0,1280,720);
     }
-}, 33);
+}, 16);
+
+console.log("module reloaded");
+var image = new Image();
+let isRecording = false;
 
 export function onReload() {
-    
+
+    viewCanvas = document.getElementById("deepar-canvas");
+    viewCanvas.width = 1280;
+    viewCanvas.height = 720;
+    for (var i = 0; i < resolutions.length; i++) {
+
+        var option = document.createElement('option')
+        var values = resolutions[i].split('x');
+        option.value = values[0]
+        option.text = resolutions[i];
+        document.getElementById('resolutionSelect').appendChild(option);
+    }
+    for (var i = 30; i <= 90; i = i + 10) {
+
+        var option = document.createElement('option');
+        option.value = i;
+        option.text = i + " fps";
+        document.getElementById('fpsSelect').appendChild(option);
+    }
+
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.enumerateDevices().then(function (devices) {
+            devices.forEach(function (device) {
+                if (device.kind === 'videoinput') {
+                    var option = document.createElement('option');
+                    option.value = device.deviceId;
+                    option.text = device.label || 'camera ' + (i + 1);
+                    document.getElementById('videoSource').appendChild(option);
+                }
+            });
+        })
+            .catch(function (err) {
+                console.log(err.name + ": " + err.message);
+            });
+
+    }
+    document.getElementById("videoSource").addEventListener("change", function () {
+        var d = document.getElementById("videoSource").value;
+        if (videoConstraints.deviceId) {
+            videoConstraints['deviceId'] = d;
+        } else {
+            videoConstraints = Object.assign(videoConstraints, { deviceId: d });
+        }
+        if (deepAR) {
+            deepAR.stopVideo();
+            deepAR.startVideo(true, videoConstraints);
+        }
+    });
+
+
+
+    document.getElementById("fpsSelect").addEventListener("change", function () {
+        var fps = document.getElementById("fpsSelect").value;
+        if (deepAR)
+            deepAR.setFps(fps);
+    });
+
+
+
+
+
+    document.getElementById("resolutionSelect").addEventListener("change", function () {
+        var d = document.getElementById("resolutionSelect").value;
+        if (videoConstraints.width) {
+            videoConstraints.width = d;
+        } else {
+            videoConstraints = Object.assign(videoConstraints, { width: d })
+        }
+        if (deepAR) {
+            deepAR.stopVideo();
+            deepAR.setCanvasSize(videoConstraints.width, videoConstraints.width / videoConstraints.aspectRatio);
+            deepAR.startVideo(true, videoConstraints);
+        }
+    });
+
+    clearInterval(canvasCopyInterval);
+        canvasCopyInterval = setInterval(function () {
+            if (viewCanvas && backgroundCanvas) {
+                var ctx = viewCanvas.getContext('2d');
+                ctx.drawImage(backgroundCanvas, 0, 0, 1280, 720);
+            }
+        }, 16);
+        console.log("interval set");
+
         deepAR = DeepAR({
             licenseKey: 'dde16183b3e6bc9ad567b627dc8c469389b0f0b4b00db360acc0d940714ba0f8dee26815fec71faa',
 
@@ -27,10 +114,8 @@ export function onReload() {
 
             numberOfFaces: 4, // how many faces we want to track min 1, max 4
             onInitialize: function () {
-
-            },
-            onAnimationTransitionedToState: function () {
-                console.log("new animation");
+                isRecording = false;
+                image = new Image();
             },
             onScreenshotTaken: function (photo) {
                 var link = document.getElementById('link');
@@ -43,13 +128,17 @@ export function onReload() {
 
     // download the face tracking model
     deepAR.downloadFaceTrackingModel('models/models-68-extreme.bin');
+    console.log("reloaded");
 }
+
+
+
 
 export function takeScreenshot() {
     deepAR.takeScreenshot();
 }
 
-let isRecording = false;
+
 export function videoRecording() {
     if (!isRecording) {
         isRecording = true;
@@ -77,7 +166,7 @@ export function loadEffect(effect) {
 
 
 export function startVideo(mirror) {
-    deepAR.startVideo(mirror);
+    deepAR.startVideo(mirror, videoConstraints);
 }
 
 export function stopVideo() {
@@ -86,6 +175,8 @@ export function stopVideo() {
 
 export function shutdown() {
     deepAR.shutdown();
+    clearInterval(canvasCopyInterval);
+    console.log("disposed");
 }
 
 export function switchEffect(path, face, slot) {
@@ -149,7 +240,7 @@ export function setBackgroundCanvasDimensions(width, height) {
 
 
 
-var image = new Image();
+
 
 export function processPhoto(url) {
 
@@ -182,74 +273,8 @@ export function processPhoto(url) {
 
 //video options related functions//
 
-if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    navigator.mediaDevices.enumerateDevices().then(function (devices) {
-        devices.forEach(function (device) {
-            if (device.kind === 'videoinput') {
-                var option = document.createElement('option');
-                option.value = device.deviceId;
-                option.text = device.label || 'camera ' + (i + 1);
-                document.getElementById('videoSource').appendChild(option);
-            }
-        });
-    })
-        .catch(function (err) {
-            console.log(err.name + ": " + err.message);
-        });
-
-}
-
-document.getElementById("videoSource").addEventListener("change", function () {
-    var d = document.getElementById("videoSource").value;
-    if (videoConstraints.deviceId) {
-        videoConstraints['deviceId'] = d;
-    } else {
-        videoConstraints = Object.assign(videoConstraints, { deviceId: d });
-    }
-    if (deepAR) {
-        deepAR.stopVideo();
-        deepAR.startVideo(true, videoConstraints);
-    }
-});
-
-for (var i = 30; i <= 90; i = i + 10) {
-
-    var option = document.createElement('option');
-    option.value = i;
-    option.text = i + " fps";
-    document.getElementById('fpsSelect').appendChild(option);
-}
-
-document.getElementById("fpsSelect").addEventListener("change", function () {
-    var fps = document.getElementById("fpsSelect").value;
-    if (deepAR)
-        deepAR.setFps(fps);
-});
 
 
-
-for (var i = 0; i < resolutions.length; i++) {
-
-    var option = document.createElement('option')
-    var values = resolutions[i].split('x');
-    option.value = values[0]
-    option.text = resolutions[i];
-    document.getElementById('resolutionSelect').appendChild(option);
-}
-
-document.getElementById("resolutionSelect").addEventListener("change", function () {
-    var d = document.getElementById("resolutionSelect").value;
-    if (videoConstraints.width) {
-        videoConstraints.width = d;
-    } else {
-        videoConstraints = Object.assign(videoConstraints, { width: d })
-    }
-    if (deepAR) {
-        deepAR.stopVideo();
-        deepAR.setCanvasSize(videoConstraints.width, videoConstraints.width/videoConstraints.aspectRatio);
-        deepAR.startVideo(true, videoConstraints);
-    }
-});
 
 
 export function setFps(fps) {

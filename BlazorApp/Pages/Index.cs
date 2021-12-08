@@ -216,9 +216,24 @@ namespace BlazorApp.Pages
 
         public async ValueTask DisposeAsync()
         {
-            await module.InvokeVoidAsync("shutdown");
+
             if (module is not null)
+            {
+                await module.InvokeVoidAsync("shutdown");
                 await module.DisposeAsync();
+            }
+        }
+
+        [JSInvokable]
+        public static void OnConnectionLost()
+        {
+
+        }
+
+        [JSInvokable]
+        public static async void OnConnectionReturn()
+        {
+            
         }
     }
 }

@@ -1,5 +1,8 @@
 
+
+
 var createDeepARModule = (function () {
+    
     var _scriptDir = typeof document !== 'undefined' && document.currentScript ? document.currentScript.src : undefined;
     if (typeof __filename !== 'undefined') _scriptDir = _scriptDir || __filename;
     return (
@@ -26,46 +29,53 @@ var createDeepARModule = (function () {
             }(this);
             (function () {
                 function a() {
-                if (v) {
-                window.requestAnimationFrame(a);
-                var q = Date.now(), w = q - p;
-                if (w > D && !e.Ch) {
-                p = q - w % D;
-                q = e.video;
-                w = e.context;
-                var x = e.nh;
-                q && w && x && q.readyState === q.HAVE_ENOUGH_DATA && (e._processFrameVideo(0, x.width, x.height, e.Nh),
-                q = e.video, e.Sh && k && (w = k.mh, w.bindTexture(w.TEXTURE_2D, e.Sh),
-                w.texImage2D(w.TEXTURE_2D, 0, w.RGBA, w.RGBA, w.UNSIGNED_BYTE, q)),
-                e.Ph && e.Dh ? (e.Ch = !0, B.classify(e.nh).then(function () {
-                e.Ph = !1;
-                e.Mh = 1;
-                e.ni = B.getOutput();
-                e._render();
-                e.Ch = !1 })) : e._render()); e.Qh && !e.Dh && e.initializeSegmentation(function () { 
-                console.log("Segmentation initialized") }) } } 
+                    if (v) {
+                        window.requestAnimationFrame(a);
+                        var q = Date.now(), w = q - p;
+                        if (w > D && !e.Ch) {
+                            p = q - w % D;
+                            q = e.video;
+                            w = e.context;
+                            var x = e.nh;
+                            q && w && x && q.readyState === q.HAVE_ENOUGH_DATA && (e._processFrameVideo(0, x.width, x.height, e.Nh),
+                                q = e.video, e.Sh && k && (w = k.mh, w.bindTexture(w.TEXTURE_2D, e.Sh),
+                                    w.texImage2D(w.TEXTURE_2D, 0, w.RGBA, w.RGBA, w.UNSIGNED_BYTE, q)),
+                                e.Ph && e.Dh ? (e.Ch = !0, B.classify(e.nh).then(function () {
+                                    e.Ph = !1;
+                                    e.Mh = 1;
+                                    e.ni = B.getOutput();
+                                    e._render();
+                                    e.Ch = !1
+                                })) : e._render()); e.Qh && !e.Dh && e.initializeSegmentation(function () {
+                                    console.log("Segmentation initialized")
+                                })
+                        }
+                    }
                 }
                 function b() {
-                var q = (new Date).getTime(), w = performance && performance.now && 1E3 * performance.now() || 0;
-                return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (x) {
-                var C = 16 * Math.random(); 0 < q ? (C = (q + C) % 16 | 0, q = Math.floor(q / 16)) : (C = (w + C) % 16 | 0, w = Math.floor(w / 16));
-                return ("x" === x ? C : C & 3 | 8).toString(16) }) 
-                } 
+                    var q = (new Date).getTime(), w = performance && performance.now && 1E3 * performance.now() || 0;
+                    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (x) {
+                        var C = 16 * Math.random(); 0 < q ? (C = (q + C) % 16 | 0, q = Math.floor(q / 16)) : (C = (w + C) % 16 | 0, w = Math.floor(w / 16));
+                        return ("x" === x ? C : C & 3 | 8).toString(16)
+                    })
+                }
                 var c = null, d = null, f = null, g = null, h = null, m = null, n = !1,
-                r = null, u = []; e.preinitializedWebGLContext = e.canvas.getContext("webgl", { alpha: !1 });
+                    r = null, u = []; e.preinitializedWebGLContext = e.canvas.getContext("webgl", { alpha: !1 });
                 e.numberOfFaces || (e.numberOfFaces = 1); var v = !1; e.process = function () { };
                 var D = 1E3 / 30, p = 0, B = null; e.setFps = function (q) { D = 1E3 / q };
                 e.initializeSegmentation = function (q) {
-                e.Qh = !1;
-                var w = e.libPath || ".", x = e.segmentationInfoZip || "segmentation.zip"; B = new window.xzimg.Segmentation;
-                B.initialize({ libPath: w, filename: x }, function () { }).then(function () {
-                e.Dh = !0; e.Ch = !1; q && q() }) };
+                    e.Qh = !1;
+                    var w = e.libPath || ".", x = e.segmentationInfoZip || "segmentation.zip"; B = new window.xzimg.Segmentation;
+                    B.initialize({ libPath: w, filename: x }, function () { }).then(function () {
+                        e.Dh = !0; e.Ch = !1; q && q()
+                    })
+                };
                 e.startLoop = function () {
-                v || (v = !0, a())
-                }; e.endLoop = function () { v = !1 }; 
+                    v || (v = !0, a())
+                }; e.endLoop = function () { v = !1 };
                 e.takeScreenshot = function () {
-                g(); v || e._render() 
-                }; 
+                    g(); v || e._render()
+                };
                 e.startVideoRecording = function () {
                     if (n) throw "Video recording already started!";
                     n = !0;
@@ -277,7 +287,16 @@ var createDeepARModule = (function () {
                     return function (q) { 1 < arguments.length && (q = Array.prototype.slice.call(arguments).join(" ")); console.log(q) }
                 }(); e.printErr = function (q) { 1 < arguments.length && (q = Array.prototype.slice.call(arguments).join(" ")); "string" === typeof q && 0 === q.indexOf("bad name in getProcAddress:") || console.log(q) }
             })(); var ba = {}, ca; for (ca in e) e.hasOwnProperty(ca) && (ba[ca] = e[ca]); var da = "./this.program";
-            function ea(a, b) { throw b; } var fa = !1, ha = !1, ia = !1, ja = !1; fa = "object" === typeof window; ha = "function" === typeof importScripts; ia = "object" === typeof process && "object" === typeof process.versions && "string" === typeof process.versions.node; ja = !fa && !ia && !ha; var l = "", ka, la, ma, ra;
+
+
+
+            
+            function ea(a, b) {
+                connectionCheck();
+            throw b; 
+            }
+            
+            var fa = !1, ha = !1, ia = !1, ja = !1; fa = "object" === typeof window; ha = "function" === typeof importScripts; ia = "object" === typeof process && "object" === typeof process.versions && "string" === typeof process.versions.node; ja = !fa && !ia && !ha; var l = "", ka, la, ma, ra;
             if (ia) l = ha ? require("path").dirname(l) + "/" : __dirname + "/", ka = function (a, b) { ma || (ma = require("fs")); ra || (ra = require("path")); a = ra.normalize(a); return ma.readFileSync(a, b ? null : "utf8") }, la = function (a) { a = ka(a, !0); a.buffer || (a = new Uint8Array(a)); assert(a.buffer); return a }, 1 < process.argv.length && (da = process.argv[1].replace(/\\/g, "/")), process.argv.slice(2), process.on("uncaughtException", function (a) { if (!(a instanceof sa)) throw a; }), process.on("unhandledRejection", ta), ea = function (a) { process.exit(a) }, e.inspect =
                 function () { return "[Emscripten Module object]" }; else if (ja) "undefined" != typeof read && (ka = function (a) { return read(a) }), la = function (a) { if ("function" === typeof readbuffer) return new Uint8Array(readbuffer(a)); a = read(a, "binary"); assert("object" === typeof a); return a }, "function" === typeof quit && (ea = function (a) { quit(a) }), "undefined" !== typeof print && ("undefined" === typeof console && (console = {}), console.log = print, console.warn = console.error = "undefined" !== typeof printErr ? printErr : print); else if (fa || ha) ha ? l = self.location.href :
                     document.currentScript && (l = document.currentScript.src), _scriptDir && (l = _scriptDir), 0 !== l.indexOf("blob:") ? l = l.substr(0, l.lastIndexOf("/") + 1) : l = "", ka = function (a) { var b = new XMLHttpRequest; b.open("GET", a, !1); b.send(null); return b.responseText }, ha && (la = function (a) { var b = new XMLHttpRequest; b.open("GET", a, !1); b.responseType = "arraybuffer"; b.send(null); return new Uint8Array(b.response) }); var ua = e.print || console.log.bind(console), t = e.printErr || console.warn.bind(console);
@@ -431,7 +450,21 @@ var createDeepARModule = (function () {
             } var fd; e.requestFullscreen = function (a, b) { Yb(a, b) }; e.requestAnimationFrame = function (a) { zb(a) }; e.setCanvasSize = function (a, b, c) { $b(e.canvas, a, b); c || ac() }; e.pauseMainLoop = function () { wb = null; Cb++ }; e.resumeMainLoop = function () { Cb++; var a = tb, b = ub, c = vb; vb = null; Ab(c); sb(a, b); wb() }; e.getUserMedia = function () { window.getUserMedia || (window.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia); window.getUserMedia(void 0) };
             e.createContext = function (a, b, c, d) { return Rb(a, b, c, d) }; for (var R, gd = new Float32Array(256), hd = 0; 256 > hd; hd++)Y[hd] = gd.subarray(0, hd + 1); var id = new Int32Array(256); for (hd = 0; 256 > hd; hd++)yc[hd] = id.subarray(0, hd + 1); for (var jd = 0; 32 > jd; jd++)Ec.push(Array(jd)); Ua.push(function () { "undefined" !== typeof _fflush && _fflush(0); pb[1].length && qb(1, 10); pb[2].length && qb(2, 10) }); function ed(a, b) { var c = Array(Ha(a) + 1); a = z(a, c, 0, c.length); b && (c.length = a); return c }
             var ke = {
-                k: function (a, b, c, d) { ta("Assertion failed: " + F(a) + ", at: " + [b ? F(b) : "unknown filename", c, d ? F(d) : "unknown function"]) }, s: function (a) { return Ja(a) }, r: function (a, b) { Ua.unshift({ Eh: a, qh: b }) }, n: function (a) { var b = N[a]; b && !b.Jh && (b.Jh = !0, kd.Hh--); b && (b.xh = !1); jb.push(a); (b = kb(a)) && N[b].Gh++; return a }, L: function () { Z(0); var a = jb.pop(); if (a) { if (a = kb(a)) { var b = N[a]; b.Gh--; 0 !== b.Gh || b.xh || (b.Kh && e.dynCall_ii(b.Kh, a), delete N[a], ld(a)) } lb = 0 } }, b: function () {
+                k: function (a, b, c, d) { ta("Assertion failed: " + F(a) + ", at: " + [b ? F(b) : "unknown filename", c, d ? F(d) : "unknown function"]) },
+                s: function (a) { return Ja(a) },
+                r: function (a, b) { Ua.unshift({ Eh: a, qh: b }) },
+                n: function (a) {
+                    var b = N[a]; b && !b.Jh && (b.Jh = !0, kd.Hh--);
+                    b && (b.xh = !1);
+                    jb.push(a);
+                    (b = kb(a)) && N[b].Gh++;
+                    return a
+                },
+                L: function () {
+                    Z(0); var a = jb.pop();
+                    if (a) { if (a = kb(a)) { var b = N[a]; b.Gh--; 0 !== b.Gh || b.xh || (b.Kh && e.dynCall_ii(b.Kh, a), delete N[a], ld(a)) } lb = 0 }
+                },
+                b: function () {
                     var a = lb; if (!a) return y = 0; var b = N[a], c = b.type; if (!c) return y =
                         0, a | 0; var d = Array.prototype.slice.call(arguments); md(c); H[167284] = a; a = 669136; for (var f = 0; f < d.length; f++)if (d[f] && nd(d[f], c, a)) return a = H[a >> 2], b.uh.push(a), y = d[f], a | 0; a = H[a >> 2]; y = c; return a | 0
                 }, d: function () { var a = lb; if (!a) return y = 0; var b = N[a], c = b.type; if (!c) return y = 0, a | 0; var d = Array.prototype.slice.call(arguments); md(c); H[167284] = a; a = 669136; for (var f = 0; f < d.length; f++)if (d[f] && nd(d[f], c, a)) return a = H[a >> 2], b.uh.push(a), y = d[f], a | 0; a = H[a >> 2]; y = c; return a | 0 }, h: function () {
@@ -468,8 +501,14 @@ var createDeepARModule = (function () {
                     var n = F(a); a = F(b); c = F(c); var r = new XMLHttpRequest; r.open(a, n, !0); r.responseType = "arraybuffer"; ec++; var u = ec; r.onload = function () { if (200 <= r.status && 300 > r.status || 0 === r.status && "http" != n.substr(0, 4).toLowerCase()) { var v = new Uint8Array(r.response), D = Ja(v.length); A.set(v, D); g && pd(g, u, d, D, v.length); f && ld(D) } else h && pd(h, u, d, r.status, r.statusText); delete dc[u] }; r.onerror = function () {
                         h && pd(h, u, d, r.status, r.statusText);
                         delete dc[u]
-                    }; r.onprogress = function (v) { m && pd(m, u, d, v.loaded, v.lengthComputable || void 0 === v.lengthComputable ? v.total : 0) }; r.onabort = function () { delete dc[u] }; "POST" == a ? (r.setRequestHeader("Content-type", "application/x-www-form-urlencoded"), r.send(c)) : r.send(null); dc[u] = r; return u
-                }, Te: function (a) { noExitRuntime = !1; qd(a) }, Db: O, xe: function (a) { R.activeTexture(a) }, we: function (a, b) { R.attachShader(S[a], V[b]) }, Ne: function (a, b) { R.jh.beginQueryEXT(a, W[b]) }, ve: function (a, b, c) { R.bindAttribLocation(S[a], b, F(c)) },
+                    }; r.onprogress = function (v) { m && pd(m, u, d, v.loaded, v.lengthComputable || void 0 === v.lengthComputable ? v.total : 0) };
+                    r.onabort = function () { delete dc[u] };
+                    "POST" == a ? (r.setRequestHeader("Content-type", "application/x-www-form-urlencoded"), r.send(c)) : r.send(null);
+                    dc[u] = r;
+                    return u
+                }
+
+                , Te: function (a) { noExitRuntime = !1; qd(a) }, Db: O, xe: function (a) { R.activeTexture(a) }, we: function (a, b) { R.attachShader(S[a], V[b]) }, Ne: function (a, b) { R.jh.beginQueryEXT(a, W[b]) }, ve: function (a, b, c) { R.bindAttribLocation(S[a], b, F(c)) },
                 ue: function (a, b) { R.bindBuffer(a, sc[b]) }, te: function (a, b) { R.bindFramebuffer(a, tc[b]) }, se: function (a, b) { R.bindRenderbuffer(a, T[b]) }, re: function (a, b) { R.bindTexture(a, M[b]) }, Fe: function (a) { R.bindVertexArray(uc[a]) }, qe: function (a, b, c, d) { R.blendColor(a, b, c, d) }, pe: function (a) { R.blendEquation(a) }, oe: function (a, b) { R.blendEquationSeparate(a, b) }, ne: function (a, b) { R.blendFunc(a, b) }, me: function (a, b, c, d) { R.blendFuncSeparate(a, b, c, d) }, le: function (a, b, c, d) { R.bufferData(a, c ? A.subarray(c, c + b) : b, d) }, ke: function (a, b,
                     c, d) { R.bufferSubData(a, b, A.subarray(d, d + c)) }, je: function (a) { return R.checkFramebufferStatus(a) }, ie: function (a) { R.clear(a) }, he: function (a, b, c, d) { R.clearColor(a, b, c, d) }, ge: function (a) { R.clearDepth(a) }, fe: function (a) { R.clearStencil(a) }, ee: function (a, b, c, d) { R.colorMask(!!a, !!b, !!c, !!d) }, de: function (a) { R.compileShader(V[a]) }, ce: function (a, b, c, d, f, g, h, m) { R.compressedTexImage2D(a, b, c, d, f, g, m ? A.subarray(m, m + h) : null) }, be: function (a, b, c, d, f, g, h, m, n) {
                         R.compressedTexSubImage2D(a, b, c, d, f, g, h, n ? A.subarray(n, n +
@@ -680,6 +719,7 @@ var createDeepARModule = (function () {
         }
     );
 })();
+
 if (typeof exports === 'object' && typeof module === 'object')
     module.exports = createDeepARModule;
 else if (typeof define === 'function' && define['amd'])
