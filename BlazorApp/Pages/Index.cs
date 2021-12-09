@@ -33,8 +33,8 @@ namespace BlazorApp.Pages
     {
         [Inject] public IJSRuntime JS { get; set; }
 
-        private IJSObjectReference? module;
-        public ToggleButton Play { get; set; } = new ToggleButton
+        private static IJSObjectReference? module;
+        public static ToggleButton Play { get; set; } = new ToggleButton
         {
             ActiveStateText = "Stop",
             InactiveStateText = "Start",
@@ -90,23 +90,40 @@ namespace BlazorApp.Pages
                "./scripts.js");
                 await module.InvokeVoidAsync("onReload");
                 StateHasChanged();
+                
             }
             
         }
 
-        protected override async void OnInitialized()
-        {
+        #region WPF-related events
 
-            //await module.InvokeVoidAsync("onReload");
-            //StateHasChanged();
+        public static async void ToggleVideoHandler()
+        {
+            await ToggleVideo();
         }
+        public static async void SwitchCameraHandler()
+        {
+            if (module is not null)
+                await module.InvokeVoidAsync("switchCamera");
+        }
+        public static async void TakeScreenshotHandler()
+        {
+            await TakeScreenshot();
+        }
+        public static async void SetResolutionHandler(int width, int height)
+        {
+            if (module is not null)
+                await module.InvokeVoidAsync("setResolution",width,height);
+        }
+        #endregion
+
 
         public async Task LoadImage()
         {
             if (module is not null)
             {
                 //await module.InvokeVoidAsync("switchEffect", Effects[1], face, slot);
-                //await module.InvokeVoidAsync("onReload");
+               // await module.InvokeVoidAsync("onReload");
                 await module.InvokeVoidAsync("processPhoto", "./test_photos/camera1.jpg");
             }
         }
@@ -122,7 +139,7 @@ namespace BlazorApp.Pages
         {
             if(module is not null)
             {
-                await module.InvokeVoidAsync("setFps", 5);
+                await module.InvokeVoidAsync("switchCamera");
             }
         }
 
@@ -132,8 +149,11 @@ namespace BlazorApp.Pages
             StateHasChanged();
         }
 
+
+
         static bool  mirror = true;
-        public async Task ToggleVideo()
+
+        public static async Task ToggleVideo()
         {
             if (module is not null)
             {
@@ -146,14 +166,9 @@ namespace BlazorApp.Pages
                     await module.InvokeVoidAsync("startVideo", mirror);
                 }
                 Play.ToggleState();
-                StateHasChanged();
+                //StateHasChanged();
             }
                 
-        }
-
-        private void HandleLocationChanges(object? sender, LocationChangedEventArgs e)
-        {
-
         }
 
         private async Task VideoRecording()
@@ -167,11 +182,11 @@ namespace BlazorApp.Pages
                 
         }
 
-        public async Task StopVideo()
-        {
-            if (module is not null)
-                await module.InvokeVoidAsync("stopVideo");
-        }
+        //public async Task StopVideo()
+        //{
+        //    if (module is not null)
+        //        await module.InvokeVoidAsync("stopVideo");
+        //}
 
         int face = 0;
         string slot = "slot";
@@ -195,19 +210,19 @@ namespace BlazorApp.Pages
             StateHasChanged();
         }
 
-        private async Task ClearEffect()
-        {
-            //await module.InvokeVoidAsync("setCanvasDimensions", 300, 300);
-            if (module is not null)
-                await module.InvokeVoidAsync("clearEffect", slot);
-        }
+        //private async Task ClearEffect()
+        //{
+        //    //await module.InvokeVoidAsync("setCanvasDimensions", 300, 300);
+        //    if (module is not null)
+        //        await module.InvokeVoidAsync("clearEffect", slot);
+        //}
 
-        private async Task SetCanvasDimensions()
-        {
-            await module.InvokeVoidAsync("setCanvasDimensions", 0, 0);
-        }
+        //private async Task SetCanvasDimensions()
+        //{
+        //    await module.InvokeVoidAsync("setCanvasDimensions", 0, 0);
+        //}
 
-        private async Task TakeScreenshot()
+        private static async Task TakeScreenshot()
         {
             if (module is not null)
                 await module.InvokeVoidAsync("takeScreenshot");

@@ -8,7 +8,7 @@ function connectionCheck() {
     console.log("attempt: " + attempts);
     if (attempts >= 67) {
         connectionStatus = false;
-        
+        //location.reload();
     }
 }
 

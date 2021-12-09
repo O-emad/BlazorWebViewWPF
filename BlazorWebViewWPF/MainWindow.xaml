@@ -7,15 +7,38 @@
         xmlns:local="clr-namespace:BlazorWebViewWPF"
         xmlns:blazorapp="clr-namespace:BlazorApp;assembly=BlazorApp"
         mc:Ignorable="d"
-        Title="DeepAR" Width="1920" Height="1080"  WindowState="Maximized" Background="Red" 
+        Title="DeepAR" Width="1920" Height="1080"  WindowState="Maximized" Background="black" 
         WindowStyle="None" BorderThickness="0" ResizeMode="NoResize" Loaded="Window_Loaded">
-    <Grid Height="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=ActualHeight}"
+    <Grid x:Name="MainGrid"
+        Height="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=ActualHeight}"
           Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type Window}}, Path=ActualWidth}">
-        <blazor:BlazorWebView Name="blazorWebView" Background="Transparent" Margin="0,0,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+            <blazor:BlazorWebView Name="blazorWebView" Background="Transparent" Grid.Row="1" MouseDoubleClick="blazorWebView_MouseDoubleClick">
             <!--<blazor:BlazorWebView.RootComponents>
                 <blazor:RootComponent Selector="#app" ComponentType="{x:Type blazorapp:App }" />
             </blazor:BlazorWebView.RootComponents>-->
         </blazor:BlazorWebView>
-        <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="445,10,0,0" VerticalAlignment="Top" Click="button_Click"/>
+        <DockPanel x:Name="TopDock" Grid.Row="0" LastChildFill="True" Visibility="Visible">
+            <WrapPanel HorizontalAlignment="Center">
+                <Button x:Name="ToggleVideoBtn" Content="Start/Stop Video" DockPanel.Dock="Top"
+                        Margin="5" VerticalAlignment="Center" Click="ToggleVideoBtn_Click"/>
+                <Button x:Name="SwitchCameraBtn" Content="Switch Camera" DockPanel.Dock="Top" 
+                        Margin="5" VerticalAlignment="Center" Click="SwitchCameraBtn_Click"/>
+                <Button x:Name="ScreenshotBtn" Content="Screenshot" DockPanel.Dock="Top" 
+                        Margin="5" VerticalAlignment="Center" Click="ScreenshotBtn_Click"/>
+                <ComboBox x:Name="ResolutionComboBox" Margin="5" VerticalAlignment="Center" Width="100" 
+                          SelectionChanged="ResolutionComboBox_SelectionChanged" ItemsSource="{Binding Resolutions}" 
+                          DisplayMemberPath="Value" SelectedValuePath="Width" SelectedIndex="0"></ComboBox>
+                <ComboBox x:Name="AspectRatioComboBox" Margin="5" VerticalAlignment="Center" Width="100" 
+                          SelectionChanged="AspectRatioComboBox_SelectionChanged" ItemsSource="{Binding AspectRatio}"
+                          SelectedValuePath="Value" DisplayMemberPath="Key"></ComboBox>
+
+            </WrapPanel>
+            
+        </DockPanel>
+        
     </Grid>
 </Window>
