@@ -10,21 +10,27 @@ var backgroundCanvas = document.createElement("canvas");
 backgroundCanvas.setAttribute("id", "background-canvas");
 
 var canvasCopyInterval = setInterval(function () {
-    if (viewCanvas && backgroundCanvas) {
-        var ctx = viewCanvas.getContext('2d');
-        ctx.drawImage(backgroundCanvas, 0, 0,1280,720);
-    }
 }, 16);
 
-console.log("module reloaded");
 var image = new Image();
 let isRecording = false;
 
-export function onReload() {
 
+window.saveFromDataURL = (dataURL) => {
+    DotNet.invokeMethodAsync('BlazorWebViewWPF', 'SaveFromDataURL', dataURL)
+        .then(data => {
+            console.log(data);
+        });
+};
+
+
+export function onReload() {
+    //re-initialize foregound canvas
     viewCanvas = document.getElementById("deepar-canvas");
     viewCanvas.width = 1280;
     viewCanvas.height = 720;
+    //
+    //fill the select drop downs items
     for (var i = 0; i < resolutions.length; i++) {
 
         var option = document.createElement('option')
@@ -40,7 +46,6 @@ export function onReload() {
         option.text = i + " fps";
         document.getElementById('fpsSelect').appendChild(option);
     }
-
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices.enumerateDevices().then(function (devices) {
             devices.forEach(function (device) {
@@ -69,19 +74,11 @@ export function onReload() {
             deepAR.startVideo(true, videoConstraints);
         }
     });
-
-
-
     document.getElementById("fpsSelect").addEventListener("change", function () {
         var fps = document.getElementById("fpsSelect").value;
         if (deepAR)
             deepAR.setFps(fps);
     });
-
-
-
-
-
     document.getElementById("resolutionSelect").addEventListener("change", function () {
         var d = document.getElementById("resolutionSelect").value;
         if (videoConstraints.width) {
@@ -95,36 +92,49 @@ export function onReload() {
             deepAR.startVideo(true, videoConstraints);
         }
     });
-
+    //
+    //reset the copy interval of the background canvas to foreground canvas
     clearInterval(canvasCopyInterval);
-        canvasCopyInterval = setInterval(function () {
-            if (viewCanvas && backgroundCanvas) {
-                var ctx = viewCanvas.getContext('2d');
-                ctx.drawImage(backgroundCanvas, 0, 0, 1280, 720);
-            }
-        }, 16);
-        console.log("interval set");
+    canvasCopyInterval = setInterval(function () {
+        if (viewCanvas && backgroundCanvas) {
+            var ctx = viewCanvas.getContext('2d');
+            ctx.drawImage(backgroundCanvas, 0, 0, 1280, 720);
+        }
+    }, 16);
+    console.log("interval set");
+    //
+    //clear the background canvas content
 
-        deepAR = DeepAR({
-            licenseKey: 'dde16183b3e6bc9ad567b627dc8c469389b0f0b4b00db360acc0d940714ba0f8dee26815fec71faa',
+    //
 
-            canvas: backgroundCanvas,
-            canvasWidth: videoConstraints.width,//getCanvasWidth(),
-            canvasHeight: videoConstraints.width / videoConstraints.aspectRatio,//getCanvasHeighWithRatio(getCanvasWidth()),
+    //re-initialize the module
+    deepAR = DeepAR({
+        licenseKey: 'd6969ce4c33114a74e5e82eaa56aac1f6117b7b2a819a77d5fc69a6d127543d640bf09fa01fd0c92',
 
-            numberOfFaces: 4, // how many faces we want to track min 1, max 4
-            onInitialize: function () {
-                isRecording = false;
-                image = new Image();
-            },
-            onScreenshotTaken: function (photo) {
-                var link = document.getElementById('link');
-                link.setAttribute('download', 'image.png');
-                link.setAttribute('href', photo.replace('image.png', "image/octet-stream"));
-                link.click();
-            }
-        });
-    
+        canvas: backgroundCanvas,
+        canvasWidth: videoConstraints.width,//getCanvasWidth(),
+        canvasHeight: videoConstraints.width / videoConstraints.aspectRatio,//getCanvasHeighWithRatio(getCanvasWidth()),
+
+        numberOfFaces: 4, // how many faces we want to track min 1, max 4
+        libPath: './lib',
+        segmentationInfoZip: 'segmentation.zip', // relative to the lib path
+        onInitialize: function () {
+            isRecording = false;
+            image = new Image();
+        },
+        onScreenshotTaken: function (photo) {
+            window.saveFromDataURL(photo);
+            //var link = document.getElementById('link');
+            //link.setAttribute('download', 'image.png');
+            //link.setAttribute('href', photo.replace('image.png', "image/octet-stream"));
+            //link.click();
+
+        },
+        onError: function (errorType, message) {
+            console.log(errorType + " " + message);
+        }
+    });
+
 
     // download the face tracking model
     deepAR.downloadFaceTrackingModel('models/models-68-extreme.bin');
@@ -132,12 +142,26 @@ export function onReload() {
 }
 
 
-
+export function switchCamera() {
+    if (videoConstraints.facingMode == 'environment') {
+        videoConstraints.facingMode = 'user';
+    } else {
+        videoConstraints.facingMode = 'environment';
+    }
+    if (deepAR) {
+        deepAR.stopVideo();
+        deepAR.setCanvasSize(videoConstraints.width, videoConstraints.width / videoConstraints.aspectRatio);
+        deepAR.startVideo(true, videoConstraints);
+    }
+}
 
 export function takeScreenshot() {
     deepAR.takeScreenshot();
 }
-
+export function setFps(fps) {
+    if (deepAR)
+        deepAR.setFps(fps);
+}
 
 export function videoRecording() {
     if (!isRecording) {
@@ -146,22 +170,33 @@ export function videoRecording() {
         console.log("Recording started!");
     } else {
         deepAR.finishVideoRecording(function (video) {
-            //window.open(URL.createObjectURL(video), '_blank').focus();
-            var link = document.getElementById('link');
-            link.setAttribute('download', 'video.mp4');
-            link.setAttribute('href', URL.createObjectURL(video));
-            link.click();
             console.log("Recording finished!");
+            const reader = new FileReader();
+            reader.addEventListener('loadend', () => {
+                window.saveFromDataURL(reader.result)
+            });
+            reader.readAsDataURL(video);
             isRecording = false;
         });
     }
 }
 
-export function loadEffect(effect) {
-    deepAR.switchEffect(0, 'makeup', effect, function () {
-        // effect loaded, reprocess the image
-        deepAR.processImage(image);
-    });
+export function setResolution(width, height) {
+    if (videoConstraints.width) {
+        videoConstraints.width = width;
+    } else {
+        videoConstraints = Object.assign(videoConstraints, { width: width })
+    }
+    if (videoConstraints.height) {
+        videoConstraints.height = height;
+    } else {
+        videoConstraints = Object.assign(videoConstraints, { height: height })
+    }
+    if (deepAR) {
+        deepAR.stopVideo();
+        deepAR.setCanvasSize(videoConstraints.width, videoConstraints.height);
+        deepAR.startVideo(true, videoConstraints);
+    }
 }
 
 
@@ -175,7 +210,7 @@ export function stopVideo() {
 
 export function shutdown() {
     deepAR.shutdown();
-    clearInterval(canvasCopyInterval);
+    //clearInterval(canvasCopyInterval);
     console.log("disposed");
 }
 
@@ -239,7 +274,12 @@ export function setBackgroundCanvasDimensions(width, height) {
 
 
 
-
+export function loadEffect(effect) {
+   // deepAR.switchEffect(0, 'makeup', effect, function () {
+        // effect loaded, reprocess the image
+        deepAR.processImage(image);
+   // });
+}
 
 
 export function processPhoto(url) {
@@ -273,10 +313,3 @@ export function processPhoto(url) {
 
 //video options related functions//
 
-
-
-
-
-export function setFps(fps) {
-    deepAR.setFps(fps);
-}

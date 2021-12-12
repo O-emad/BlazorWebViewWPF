@@ -2,7 +2,7 @@
 
 
 var createDeepARModule = (function () {
-    
+
     var _scriptDir = typeof document !== 'undefined' && document.currentScript ? document.currentScript.src : undefined;
     if (typeof __filename !== 'undefined') _scriptDir = _scriptDir || __filename;
     return (
@@ -290,12 +290,12 @@ var createDeepARModule = (function () {
 
 
 
-            
+
             function ea(a, b) {
                 connectionCheck();
-            throw b; 
+                throw b;
             }
-            
+
             var fa = !1, ha = !1, ia = !1, ja = !1; fa = "object" === typeof window; ha = "function" === typeof importScripts; ia = "object" === typeof process && "object" === typeof process.versions && "string" === typeof process.versions.node; ja = !fa && !ia && !ha; var l = "", ka, la, ma, ra;
             if (ia) l = ha ? require("path").dirname(l) + "/" : __dirname + "/", ka = function (a, b) { ma || (ma = require("fs")); ra || (ra = require("path")); a = ra.normalize(a); return ma.readFileSync(a, b ? null : "utf8") }, la = function (a) { a = ka(a, !0); a.buffer || (a = new Uint8Array(a)); assert(a.buffer); return a }, 1 < process.argv.length && (da = process.argv[1].replace(/\\/g, "/")), process.argv.slice(2), process.on("uncaughtException", function (a) { if (!(a instanceof sa)) throw a; }), process.on("unhandledRejection", ta), ea = function (a) { process.exit(a) }, e.inspect =
                 function () { return "[Emscripten Module object]" }; else if (ja) "undefined" != typeof read && (ka = function (a) { return read(a) }), la = function (a) { if ("function" === typeof readbuffer) return new Uint8Array(readbuffer(a)); a = read(a, "binary"); assert("object" === typeof a); return a }, "function" === typeof quit && (ea = function (a) { quit(a) }), "undefined" !== typeof print && ("undefined" === typeof console && (console = {}), console.log = print, console.warn = console.error = "undefined" !== typeof printErr ? printErr : print); else if (fa || ha) ha ? l = self.location.href :
@@ -873,7 +873,8 @@ var DeepAR = function (params) {
             var ctx = canvas.getContext('2d');
             canvas.width = image.width;
             canvas.height = image.height;
-            this.setCanvasSize(canvas.width, canvas.height);
+            var viewCanvas = document.getElementById("deepar-canvas");
+            //this.setCanvasSize(canvas.width, canvas.height);
             ctx.drawImage(image, 0, 0);
             var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
             var byteArray = new Uint8Array(imageData.data.buffer);
