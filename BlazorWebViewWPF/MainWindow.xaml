@@ -29,15 +29,22 @@
                         Margin="5" VerticalAlignment="Center" Click="SwitchCameraBtn_Click"/>
                 <Button x:Name="ScreenshotBtn" Content="Screenshot" DockPanel.Dock="Top" 
                         Margin="5" VerticalAlignment="Center" Click="ScreenshotBtn_Click"/>
+                <Button x:Name="RecordingBtn" Content="Start/Stop Recording" DockPanel.Dock="Top" 
+                        Margin="5" VerticalAlignment="Center" Click="RecordingBtn_Click" />
                 <ComboBox x:Name="ResolutionComboBox" Margin="5" VerticalAlignment="Center" Width="100" 
                           SelectionChanged="ResolutionComboBox_SelectionChanged" ItemsSource="{Binding Resolutions}" 
                           DisplayMemberPath="Value" SelectedValuePath="Width" SelectedIndex="0"></ComboBox>
                 <ComboBox x:Name="AspectRatioComboBox" Margin="5" VerticalAlignment="Center" Width="100" 
                           SelectionChanged="AspectRatioComboBox_SelectionChanged" ItemsSource="{Binding AspectRatio}"
                           SelectedValuePath="Value" DisplayMemberPath="Key"></ComboBox>
-
+                <ComboBox x:Name="FpsComboBox" Margin="5" VerticalAlignment="Center" Width="100" 
+                          SelectionChanged="FpsComboBox_SelectionChanged" ItemsSource="{Binding FPS}"
+                          ></ComboBox>
+                <ComboBox x:Name="EffectComboBox" Margin="5" VerticalAlignment="Center" Width="100" 
+                          SelectionChanged="EffectComboBox_SelectionChanged" ItemsSource="{Binding Effects}"
+                          SelectedValuePath="Value" DisplayMemberPath="Key"></ComboBox>
             </WrapPanel>
-            
+            <Label x:Name="CloseAppLbl" VerticalAlignment="Center" HorizontalAlignment="Right" Width="100" Height="32" MouseDown="CloseAppLbl_MouseDown"></Label>
         </DockPanel>
         
     </Grid>

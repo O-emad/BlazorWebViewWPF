@@ -41,7 +41,7 @@ namespace BlazorApp.Pages
             ActiveStateIcon = Icons.Filled.Stop,
             InactiveStateIcon = Icons.Filled.PlayArrow
         };
-        public ToggleButton Record { get; set; } = new ToggleButton
+        public static ToggleButton Record { get; set; } = new ToggleButton
         {
             ActiveStateText = "Stop Recording",
             InactiveStateText = "Start Recording",
@@ -115,6 +115,25 @@ namespace BlazorApp.Pages
             if (module is not null)
                 await module.InvokeVoidAsync("setResolution",width,height);
         }
+        public static async void ToggleRecordingHandler()
+        {
+            await VideoRecording();
+        }
+        public static async void ChangeFPSHandler(int fps)
+        {
+            if (module is not null)
+                await module.InvokeVoidAsync("setFps", fps);
+        }
+        public static async void ClearEffectHandler()
+        {
+            if (module is not null)
+                await module.InvokeVoidAsync("clearEffect","slot");
+        }
+        public static async void ChangeEffectHandler(string effectFilename)
+        {
+            if(module is not null)
+                await module.InvokeVoidAsync("switchEffect", effectFilename, 0, "slot");
+        }
         #endregion
 
 
@@ -139,7 +158,7 @@ namespace BlazorApp.Pages
         {
             if(module is not null)
             {
-                await module.InvokeVoidAsync("switchCamera");
+                await module.InvokeVoidAsync("setFps",5);
             }
         }
 
@@ -171,15 +190,13 @@ namespace BlazorApp.Pages
                 
         }
 
-        private async Task VideoRecording()
+        private static async Task VideoRecording()
         {
             if (module is not null)
             {
                 await module.InvokeVoidAsync("videoRecording");
                 Record.ToggleState();
-                StateHasChanged();
             }
-                
         }
 
         //public async Task StopVideo()

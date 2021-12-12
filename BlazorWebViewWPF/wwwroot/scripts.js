@@ -10,22 +10,19 @@ var backgroundCanvas = document.createElement("canvas");
 backgroundCanvas.setAttribute("id", "background-canvas");
 
 var canvasCopyInterval = setInterval(function () {
-//    if (viewCanvas && backgroundCanvas) {
-//        //var ctx = viewCanvas.getContext('2d');
-//        //ctx.drawImage(backgroundCanvas, 0, 0, 1280, 720);
-//        //console.log("copy");
-//    }
 }, 16);
+
 var image = new Image();
 let isRecording = false;
 
 
-window.screenshot = (photo) => {
-    DotNet.invokeMethodAsync('BlazorWebViewWPF', 'ReturnScreenshot', photo)
+window.saveFromDataURL = (dataURL) => {
+    DotNet.invokeMethodAsync('BlazorWebViewWPF', 'SaveFromDataURL', dataURL)
         .then(data => {
             console.log(data);
         });
 };
+
 
 export function onReload() {
     //re-initialize foregound canvas
@@ -124,7 +121,7 @@ export function onReload() {
             image = new Image();
         },
         onScreenshotTaken: function (photo) {
-            window.screenshot(photo);
+            window.saveFromDataURL(photo);
             //var link = document.getElementById('link');
             //link.setAttribute('download', 'image.png');
             //link.setAttribute('href', photo.replace('image.png', "image/octet-stream"));
@@ -159,7 +156,10 @@ export function switchCamera() {
 export function takeScreenshot() {
     deepAR.takeScreenshot();
 }
-
+export function setFps(fps) {
+    if (deepAR)
+        deepAR.setFps(fps);
+}
 
 export function videoRecording() {
     if (!isRecording) {
@@ -168,12 +168,12 @@ export function videoRecording() {
         console.log("Recording started!");
     } else {
         deepAR.finishVideoRecording(function (video) {
-            //window.open(URL.createObjectURL(video), '_blank').focus();
-            var link = document.getElementById('link');
-            link.setAttribute('download', 'video.mp4');
-            link.setAttribute('href', URL.createObjectURL(video));
-            link.click();
             console.log("Recording finished!");
+            const reader = new FileReader();
+            reader.addEventListener('loadend', () => {
+                window.saveFromDataURL(reader.result)
+            });
+            reader.readAsDataURL(video);
             isRecording = false;
         });
     }
@@ -311,10 +311,3 @@ export function processPhoto(url) {
 
 //video options related functions//
 
-
-
-
-
-export function setFps(fps) {
-    deepAR.setFps(fps);
-}

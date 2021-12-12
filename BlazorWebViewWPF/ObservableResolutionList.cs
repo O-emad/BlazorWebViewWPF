@@ -15,11 +15,12 @@ namespace BlazorWebViewWPF
         {
             foreach (var resolution in ResolutionWidth)
             {
+                
                 Add(new Resolution(resolution.ToString()));
             }
             //CollectionChanged += HandleChange;
         }
-
+        
         public void Update(double aspectRatio)
         {
             for (int i = 0; i < ResolutionWidth.Length; i++)
