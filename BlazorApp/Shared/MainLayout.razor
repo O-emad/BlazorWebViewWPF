@@ -24,18 +24,14 @@
 <MudSnackbarProvider />
 
 <MudLayout>
-    <MudAppBar id="appbar">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e)=> DrawerToggle())" />
+@*    <MudAppBar id="appbar">
         DeepAR
         <MudSpacer />
         <MudIconButton Icon="@Icons.Material.Filled.Logout" Color="Color.Inherit" OnClick="CloseApp"></MudIconButton>
         
-    </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen">
-        <NavMenu />
-    </MudDrawer>
+    </MudAppBar>*@
 
-    <MudMainContent MaxWidth="MaxWidth.Medium">
+    <MudMainContent MaxWidth="MaxWidth.False" Style="padding-top:0;">
         <MudContainer MaxWidth="MaxWidth.False">
             @Body
         </MudContainer>

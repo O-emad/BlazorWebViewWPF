@@ -11,15 +11,9 @@ namespace BlazorApp.Shared
 {
     public partial class MainLayout
     {
-        //[Inject] public  SignOutSessionStateManager SignOutManager { get; set; }
-        [Inject] public  NavigationManager NavigationManager { get; set; }
-        //[Inject] public  IAccessTokenProvider TokenProvider { get; set; }
-         bool _drawerOpen = false;
-         void DrawerToggle()
-        {
-            _drawerOpen = !_drawerOpen;
 
-        }
+        [Inject] public  NavigationManager NavigationManager { get; set; }
+       
 
         public static readonly MudTheme MyCustomTheme = new MudTheme()
         {
@@ -69,11 +63,5 @@ namespace BlazorApp.Shared
             onCloseApp();
             
         }
-
-        // private async Task BeginSignOut(MouseEventArgs args)
-        //{
-        //    await SignOutManager.SetSignOutState();
-        //    NavigationManager.NavigateTo("authentication/logout");
-        //}
     }
 }

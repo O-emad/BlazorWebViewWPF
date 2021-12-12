@@ -48,37 +48,6 @@ namespace BlazorApp.Pages
             ActiveStateIcon = Icons.Filled.Stop,
             InactiveStateIcon = Icons.Filled.FiberSmartRecord
         };
-        public IList<string> EffectsThumbs { get; set; } = new List<string>
-    {
-        "",
-        "./thumbs/aviators.png",
-        "",
-        "./thumbs/beard.png",
-        "./thumbs/dalmatian.png",
-        "./thumbs/flowers.png",
-        "./thumbs/koala.png",
-        "./thumbs/lion.png",
-        "",
-        "",
-        "./thumbs/teddy_cigar.png"
-    };
-        public IList<string> Effects { get; set; } = new List<string>
-    {
-        "",
-        "./effects/aviators.txt",
-        "./effects/background_segmentation.txt",
-        "./effects/beard.txt",
-        "./effects/dalmatian.txt",
-        "./effects/flowers.txt",
-        "./effects/koala.txt",
-        "./effects/lion.txt",
-        "./effects/look1.txt",
-        "./effects/look2.txt",
-        "./effects/teddycigar.txt"
-    };
-
-        private IList<string> _source = new List<string>() { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-        private MudCarousel<string> _carousel { get; set; }
         private int selectedEffect { get; set; }
 
 
@@ -110,10 +79,10 @@ namespace BlazorApp.Pages
         {
             await TakeScreenshot();
         }
-        public static async void SetResolutionHandler(int width, int height)
+        public static async void SetResolutionHandler(int width, int height, double aspectRatio)
         {
             if (module is not null)
-                await module.InvokeVoidAsync("setResolution",width,height);
+                await module.InvokeVoidAsync("setResolution",width,height,aspectRatio);
         }
         public static async void ToggleRecordingHandler()
         {
@@ -141,19 +110,9 @@ namespace BlazorApp.Pages
         {
             if (module is not null)
             {
-                //await module.InvokeVoidAsync("switchEffect", Effects[1], face, slot);
-               // await module.InvokeVoidAsync("onReload");
                 await module.InvokeVoidAsync("processPhoto", "./test_photos/camera1.jpg");
             }
         }
-        public async Task LoadEffect()
-        {
-            if (module is not null)
-            {
-                await module.InvokeVoidAsync("loadEffect", Effects[selectedEffect]);
-            }
-        }
-
         public async Task SetFps()
         {
             if(module is not null)
@@ -161,14 +120,6 @@ namespace BlazorApp.Pages
                 await module.InvokeVoidAsync("setFps",5);
             }
         }
-
-        public void EffectChange()
-        {
-            selectedEffect = _carousel.SelectedIndex;
-            StateHasChanged();
-        }
-
-
 
         static bool  mirror = true;
 
@@ -185,7 +136,6 @@ namespace BlazorApp.Pages
                     await module.InvokeVoidAsync("startVideo", mirror);
                 }
                 Play.ToggleState();
-                //StateHasChanged();
             }
                 
         }
@@ -198,46 +148,6 @@ namespace BlazorApp.Pages
                 Record.ToggleState();
             }
         }
-
-        //public async Task StopVideo()
-        //{
-        //    if (module is not null)
-        //        await module.InvokeVoidAsync("stopVideo");
-        //}
-
-        int face = 0;
-        string slot = "slot";
-
-        private async Task SwitchEffect()
-        {
-            selectedEffect = _carousel.SelectedIndex;
-            if (module is not null)
-            {
-                if (selectedEffect == 0)
-                {
-                    await module.InvokeVoidAsync("clearEffect", slot);
-                }
-                else
-                {
-                    await module.InvokeVoidAsync("switchEffect", Effects[selectedEffect], face, slot);
-                }
-                //EffectInUse++;
-                //if (EffectInUse >= Effects.Count) EffectInUse = 0;
-            }
-            StateHasChanged();
-        }
-
-        //private async Task ClearEffect()
-        //{
-        //    //await module.InvokeVoidAsync("setCanvasDimensions", 300, 300);
-        //    if (module is not null)
-        //        await module.InvokeVoidAsync("clearEffect", slot);
-        //}
-
-        //private async Task SetCanvasDimensions()
-        //{
-        //    await module.InvokeVoidAsync("setCanvasDimensions", 0, 0);
-        //}
 
         private static async Task TakeScreenshot()
         {

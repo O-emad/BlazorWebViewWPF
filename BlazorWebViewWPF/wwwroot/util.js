@@ -1,37 +1,36 @@
 ﻿
 
 var attempts = 0;
-var connectionStatus = true;
+//var connectionStatus = true;
 
-function connectionCheck() {
-    attempts++;
-    console.log("attempt: " + attempts);
-    if (attempts >= 67) {
-        connectionStatus = false;
-        //location.reload();
-    }
-}
+//function connectionCheck() {
+//    attempts++;
+//    console.log("attempt: " + attempts);
+//    if (attempts >= 67) {
+//        connectionStatus = false;
+//    }
+//}
 
-let handler;
+//let handler;
 
-window.Connection = {
-    Initialize: function (interop) {
+//window.Connection = {
+//    Initialize: function (interop) {
 
-        handler = function () {
-            interop.invokeMethodAsync("Connection.StatusChanged", navigator.onLine);
-        }
+//        handler = function () {
+//            interop.invokeMethodAsync("Connection.StatusChanged", navigator.onLine);
+//        }
 
-        window.addEventListener("online", handler);
-        window.addEventListener("offline", handler);
+//        window.addEventListener("online", handler);
+//        window.addEventListener("offline", handler);
 
-        handler(navigator.onLine);
-    },
-    Dispose: function () {
+//        handler(navigator.onLine);
+//    },
+//    Dispose: function () {
 
-        if (handler != null) {
+//        if (handler != null) {
 
-            window.removeEventListener("online", handler);
-            window.removeEventListener("offline", handler);
-        }
-    }
-};
+//            window.removeEventListener("online", handler);
+//            window.removeEventListener("offline", handler);
+//        }
+//    }
+//};
