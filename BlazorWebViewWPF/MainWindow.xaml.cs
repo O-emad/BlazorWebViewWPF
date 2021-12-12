@@ -72,7 +72,8 @@ namespace BlazorWebViewWPF
                 new KeyValuePair<string, string>("Look1","./effects/look1.txt"),
                 new KeyValuePair<string, string>("Look2","./effects/look2.txt"),
                 new KeyValuePair<string, string>("Lion","./effects/lion.txt"),
-                new KeyValuePair<string, string>("Teddycigar","./effects/teddycigar.txt")
+                new KeyValuePair<string, string>("Teddycigar","./effects/teddycigar.txt"),
+                new KeyValuePair<string, string>("Segmentation","./effects/background_segmentation.txt")
             };
             DataContext = ViewModel;
             

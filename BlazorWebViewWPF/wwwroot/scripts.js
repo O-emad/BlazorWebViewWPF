@@ -116,6 +116,8 @@ export function onReload() {
         canvasHeight: videoConstraints.width / videoConstraints.aspectRatio,//getCanvasHeighWithRatio(getCanvasWidth()),
 
         numberOfFaces: 4, // how many faces we want to track min 1, max 4
+        libPath: './lib',
+        segmentationInfoZip: 'segmentation.zip', // relative to the lib path
         onInitialize: function () {
             isRecording = false;
             image = new Image();

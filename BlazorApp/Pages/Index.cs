@@ -52,7 +52,7 @@ namespace BlazorApp.Pages
     {
         "",
         "./thumbs/aviators.png",
-        //"./effects/background_segmentation.txt",
+        "",
         "./thumbs/beard.png",
         "./thumbs/dalmatian.png",
         "./thumbs/flowers.png",
@@ -66,7 +66,7 @@ namespace BlazorApp.Pages
     {
         "",
         "./effects/aviators.txt",
-        //"./effects/background_segmentation.txt",
+        "./effects/background_segmentation.txt",
         "./effects/beard.txt",
         "./effects/dalmatian.txt",
         "./effects/flowers.txt",
