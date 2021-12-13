@@ -17,8 +17,4 @@
     <ProjectReference Include="..\BlazorApp\BlazorApp.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="images\" />
-  </ItemGroup>
-
 </Project>

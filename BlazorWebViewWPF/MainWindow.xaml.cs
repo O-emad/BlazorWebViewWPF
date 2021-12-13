@@ -41,7 +41,6 @@ namespace BlazorWebViewWPF
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddBlazorWebView();
             serviceCollection.AddMudServices();
-            //Resources.Add("services", serviceCollection.BuildServiceProvider());
 
             InitializeComponent();
             blazorWebView.Services = serviceCollection.BuildServiceProvider();
@@ -81,7 +80,6 @@ namespace BlazorWebViewWPF
 
         public void CloseApp()
         {
-            //Application.Current.Shutdown();
             if (TopDock.Visibility == Visibility.Visible)
                 TopDock.Visibility = Visibility.Collapsed;
             else
@@ -95,7 +93,7 @@ namespace BlazorWebViewWPF
         public event SwitchCameraHandler SwitchCamera;
         public delegate void TakeScreenshotHandler();
         public event TakeScreenshotHandler TakeScreenshot;
-        public delegate void ChangeResolutionHandler(int width, int height);
+        public delegate void ChangeResolutionHandler(int width, int height,double aspectRatio);
         public event ChangeResolutionHandler ChangeResolution;
         public delegate void ToggleRecordingHandler();
         public event ToggleRecordingHandler ToggleRecording;
@@ -156,7 +154,9 @@ namespace BlazorWebViewWPF
             if (selectedItem.Width == 0) return;
             var width = selectedItem.Width;
             var height = selectedItem.Height;
-            ChangeResolution(width, height);
+            var selectedAspectRatio = AspectRatioComboBox.SelectedItem;
+            var aspectRatio = selectedAspectRatio is not null ? ((KeyValuePair<string,double>)selectedAspectRatio).Value : (double)(width / height);
+            ChangeResolution(width, height,aspectRatio);
 
         }
         private void FpsComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -195,7 +195,10 @@ namespace BlazorWebViewWPF
             var type = Regex.Match(urlData[0], @"\/(.+?)\;").Groups[1].Value;
             byte[] dataBytes = Convert.FromBase64String(urlData[1]);
             var path = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var filename = path + @$"/media/{DateTime.Now.Ticks}.{type}";
+            path = path + @$"/media";
+            var filename = path + @$"/{DateTime.Now.Ticks}.{type}";
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
             File.WriteAllBytes(filename, dataBytes);
             return Task.FromResult<string>(filename);
         }

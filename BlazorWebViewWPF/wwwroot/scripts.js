@@ -27,78 +27,15 @@ window.saveFromDataURL = (dataURL) => {
 export function onReload() {
     //re-initialize foregound canvas
     viewCanvas = document.getElementById("deepar-canvas");
-    viewCanvas.width = 1280;
-    viewCanvas.height = 720;
-    //
-    //fill the select drop downs items
-    for (var i = 0; i < resolutions.length; i++) {
-
-        var option = document.createElement('option')
-        var values = resolutions[i].split('x');
-        option.value = values[0]
-        option.text = resolutions[i];
-        document.getElementById('resolutionSelect').appendChild(option);
-    }
-    for (var i = 30; i <= 90; i = i + 10) {
-
-        var option = document.createElement('option');
-        option.value = i;
-        option.text = i + " fps";
-        document.getElementById('fpsSelect').appendChild(option);
-    }
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.enumerateDevices().then(function (devices) {
-            devices.forEach(function (device) {
-                if (device.kind === 'videoinput') {
-                    var option = document.createElement('option');
-                    option.value = device.deviceId;
-                    option.text = device.label || 'camera ' + (i + 1);
-                    document.getElementById('videoSource').appendChild(option);
-                }
-            });
-        })
-            .catch(function (err) {
-                console.log(err.name + ": " + err.message);
-            });
-
-    }
-    document.getElementById("videoSource").addEventListener("change", function () {
-        var d = document.getElementById("videoSource").value;
-        if (videoConstraints.deviceId) {
-            videoConstraints['deviceId'] = d;
-        } else {
-            videoConstraints = Object.assign(videoConstraints, { deviceId: d });
-        }
-        if (deepAR) {
-            deepAR.stopVideo();
-            deepAR.startVideo(true, videoConstraints);
-        }
-    });
-    document.getElementById("fpsSelect").addEventListener("change", function () {
-        var fps = document.getElementById("fpsSelect").value;
-        if (deepAR)
-            deepAR.setFps(fps);
-    });
-    document.getElementById("resolutionSelect").addEventListener("change", function () {
-        var d = document.getElementById("resolutionSelect").value;
-        if (videoConstraints.width) {
-            videoConstraints.width = d;
-        } else {
-            videoConstraints = Object.assign(videoConstraints, { width: d })
-        }
-        if (deepAR) {
-            deepAR.stopVideo();
-            deepAR.setCanvasSize(videoConstraints.width, videoConstraints.width / videoConstraints.aspectRatio);
-            deepAR.startVideo(true, videoConstraints);
-        }
-    });
+    viewCanvas.width = getCanvasWidth();
+    viewCanvas.height = viewCanvas.width/videoConstraints.aspectRatio;
     //
     //reset the copy interval of the background canvas to foreground canvas
     clearInterval(canvasCopyInterval);
     canvasCopyInterval = setInterval(function () {
         if (viewCanvas && backgroundCanvas) {
             var ctx = viewCanvas.getContext('2d');
-            ctx.drawImage(backgroundCanvas, 0, 0, 1280, 720);
+            ctx.drawImage(backgroundCanvas, 0, 0, viewCanvas.width, viewCanvas.height);
         }
     }, 16);
     console.log("interval set");
@@ -112,8 +49,8 @@ export function onReload() {
         licenseKey: 'd6969ce4c33114a74e5e82eaa56aac1f6117b7b2a819a77d5fc69a6d127543d640bf09fa01fd0c92',
 
         canvas: backgroundCanvas,
-        canvasWidth: videoConstraints.width,//getCanvasWidth(),
-        canvasHeight: videoConstraints.width / videoConstraints.aspectRatio,//getCanvasHeighWithRatio(getCanvasWidth()),
+        canvasWidth: videoConstraints.width,
+        canvasHeight: videoConstraints.width / videoConstraints.aspectRatio,
 
         numberOfFaces: 4, // how many faces we want to track min 1, max 4
         libPath: './lib',
@@ -124,10 +61,6 @@ export function onReload() {
         },
         onScreenshotTaken: function (photo) {
             window.saveFromDataURL(photo);
-            //var link = document.getElementById('link');
-            //link.setAttribute('download', 'image.png');
-            //link.setAttribute('href', photo.replace('image.png', "image/octet-stream"));
-            //link.click();
 
         },
         onError: function (errorType, message) {
@@ -156,7 +89,9 @@ export function switchCamera() {
 }
 
 export function takeScreenshot() {
+
     deepAR.takeScreenshot();
+    
 }
 export function setFps(fps) {
     if (deepAR)
@@ -181,7 +116,7 @@ export function videoRecording() {
     }
 }
 
-export function setResolution(width, height) {
+export function setResolution(width, height, aspectRatio) {
     if (videoConstraints.width) {
         videoConstraints.width = width;
     } else {
@@ -192,11 +127,17 @@ export function setResolution(width, height) {
     } else {
         videoConstraints = Object.assign(videoConstraints, { height: height })
     }
+    if (videoConstraints.aspectRatio) {
+        videoConstraints.aspectRatio = aspectRatio;
+    } else {
+        videoConstraints = Object.assign(videoConstraints, { aspectRatio: aspectRatio })
+    }
     if (deepAR) {
         deepAR.stopVideo();
         deepAR.setCanvasSize(videoConstraints.width, videoConstraints.height);
         deepAR.startVideo(true, videoConstraints);
     }
+    setViewCanvasDimensions(0);
 }
 
 
@@ -210,7 +151,7 @@ export function stopVideo() {
 
 export function shutdown() {
     deepAR.shutdown();
-    //clearInterval(canvasCopyInterval);
+    clearInterval(canvasCopyInterval);
     console.log("disposed");
 }
 
@@ -231,18 +172,10 @@ function getCanvasWidth() {
     var style = getComputedStyle(canvasContainer);
     let paddingLeft = parseInt(style.paddingLeft);
     let paddingRight = parseInt(style.paddingRight);
-    let ratio = window.innerHeight / window.innerWidth;
     let scrollbarWidth = (window.innerWidth - document.documentElement.clientWidth) || 0;
     var canvasWidth = canvasContainer.clientWidth - paddingLeft - paddingRight - scrollbarWidth;
     return canvasWidth;
 }
-
-//function getCanvasHeighWithRatio(width) {
-//    var appbar = document.getElementById('appbar');
-//    let ratio = window.innerHeight / window.innerWidth;
-//    var canvasHeight = (width * ratio) - appbar.clientHeight * 2 - 10;
-//    return canvasHeight;
-//}
 
 export function setViewCanvasDimensions(width, height) {
     viewCanvas.width = width || getCanvasWidth();
