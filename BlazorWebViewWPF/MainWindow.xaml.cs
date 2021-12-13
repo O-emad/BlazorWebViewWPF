@@ -41,7 +41,6 @@ namespace BlazorWebViewWPF
             var serviceCollection = new ServiceCollection();
             serviceCollection.AddBlazorWebView();
             serviceCollection.AddMudServices();
-            //Resources.Add("services", serviceCollection.BuildServiceProvider());
 
             InitializeComponent();
             blazorWebView.Services = serviceCollection.BuildServiceProvider();
@@ -196,9 +195,10 @@ namespace BlazorWebViewWPF
             var type = Regex.Match(urlData[0], @"\/(.+?)\;").Groups[1].Value;
             byte[] dataBytes = Convert.FromBase64String(urlData[1]);
             var path = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            var filename = path + @$"/media/{DateTime.Now.Ticks}.{type}";
-            if (!Directory.Exists(path + @"/media"))
-                Directory.CreateDirectory(path + @"/media");
+            path = path + @$"/media";
+            var filename = path + @$"/{DateTime.Now.Ticks}.{type}";
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
             File.WriteAllBytes(filename, dataBytes);
             return Task.FromResult<string>(filename);
         }
